@@ -1,0 +1,10 @@
+Data made by George Stein taken from
+https://www.cita.utoronto.ca/~gstein/data/CO/COMAP_fullvolume/midz/z4.77-6.21_700Mpc/npz/
+
+Some notes from his email:
+- "midz" simulation: 20GHz to 16GHz
+- sim covers from 20GHz to 16GHz in a 700Mpc box
+- each of the 18 sims cover 4.72 x 4.72 deg for 72 non-overlapping 4sq deg patches
+- uses Li cosmological parameters, and have a minimum halo mass off 4e9 Msun (not Msunh)
+- files are in the .npz format and should read in to limlam_mocker
+- the halos range from 7764 to 8464 cMpc
