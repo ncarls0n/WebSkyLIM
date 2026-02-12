@@ -1,3 +1,3 @@
-# Line Intensity Mapping at CITA
+# WebSky Line Intensity Mapping
 
-This is the repository for my working space at CITA on line intensity mapping. My project is using the `limlam_mocker` package (written by Dr. George Stein and Dr. Dongwoo Chung in 2018), more precisely a modified version by Dr. Patrick Breysse and his supervisee Clara Chung written in 2020 for Clara Chung's SURP project. 
+This repository contains the latest, stable version of the line intensity mapping (LIM) implementation of WebSky. These codes are based on the `limlam_mocker` package (originally written by George Stein, and later modified significantly by Dongwoo Chung, Patrick Breysse, Clara Chung and Patrick Horlaville). This implementation was forked from my branch of Patrick's CITA_LIM repo and streamlined to include just critical components. Currently, this code is being developed by Nate Carlson and Doga Tolgay to produce FIRE-informed CO mocks.
