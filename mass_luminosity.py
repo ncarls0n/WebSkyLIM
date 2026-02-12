@@ -132,13 +132,15 @@ def FIRE_Forged_CO(Mvec,MLpar,z):
     # Load the interpollation file
     interp_table = np.genfromtxt( interp_table_file, delimiter=',' )
 
-    # For now, we'll just do a linear interpollation between model parameters 
+    # For now, we do a linear interpollation between model parameters 
     A     = np.interp( z, interp_table[:,0], interp_table[:,1] )
     B     = np.interp( z, interp_table[:,0], interp_table[:,2] )
     logC  = np.interp( z, interp_table[:,0], interp_table[:,3] )
     logM  = np.interp( z, interp_table[:,0], interp_table[:,4] )
     Ms    = 10**logM * u.Msun
     sigma = np.interp( z, interp_table[:,0], interp_table[:,5] )
+
+    # Need to implement scatter
 
     # Luminosity in K km/s pc^2
     L_CO_prime = C / ( ( Mvec/Ms )**A + ( Mvec/Ms )**B )
