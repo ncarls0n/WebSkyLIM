@@ -4,13 +4,7 @@ This repository contains the latest, stable version of the line intensity mappin
 
 ## Summary of code components
 
-1. `lim.py` is the primary interface for interacting with the package. A lim model is loaded in python by importing `from lim import lim` and creating an object, e.g. `model = lim( model_params='COMAP_Fid', doSim=True )`
-1. `mass_luminosity.py` contains the response functions to halo catalogues
-1. ...
-
----
-
-## What this repo does
+The primary interface for interacting with the package is `lim.py` is the primary interface for interacting with the package. A lim model is loaded in python by importing `from lim import lim` and creating an object, e.g. `model = lim( model_params='COMAP_Fid', doSim=True )`
 
 WebSkyLIM provides a lightweight LIM toolkit with three tightly-coupled layers:
 
@@ -21,7 +15,7 @@ WebSkyLIM provides a lightweight LIM toolkit with three tightly-coupled layers:
    Add survey geometry and instrument noise to predict quantities like voxel noise, noise power, k-space errors, and SNR.
 
 3. **Map-based simulations (`LimLam`)**  
-   Wrap the `limlam_mocker` pipeline to generate 3D LIM cubes from halo catalogues and measure map-based statistics (e.g., simulated power spectra, VID/histograms).
+   Wrap the `limlam_mocker` pipeline to generate 3D LIM cubes from halo catalogues and measure map-based statistics (e.g., simulated power spectra, VID/histograms). These are built from halo catalogues using response functions in `mass_luminosity.py`.
 
 Everything is built around `astropy.units`, so **inputs should carry units** and outputs come back with units whenever possible.
 
