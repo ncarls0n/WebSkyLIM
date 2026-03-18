@@ -115,6 +115,7 @@ def Tolgay2026CO(Mvec,MLpar,z):
     changes with halo mass and redshift.
     '''
     from pathlib import Path
+    import astropy.constants as const
 
     # default interpollation table for line luminosity model parameters
     WebSkyLIM_dir = Path(__file__).resolve().parent
@@ -151,12 +152,14 @@ def Tolgay2026CO(Mvec,MLpar,z):
     lognorm_sigma = np.log(10) * sigma
     lognorm_scatter = np.random.normal( lnL_CO_prime, lognorm_sigma )
     
-    # Luminosity in K km/s pc^2
+    # Brightness Temperature Luminosity L' in K km/s pc^2
     # L_CO_prime = C / ( ( Mvec/Ms )**A + ( Mvec/Ms )**B )
-    L_CO_prime = 10**lognorm_scatter
+    L_CO_prime = 10**lognorm_scatter * u.K * u.km * u.s**-1 * u.pc**2
 
     # Compute and return Luminosity in solar luminosities
-    L_CO = L_CO_prime * 4.9e-5 * u.Lsun
+    nu_CO = 115.27 * u.GHz
+    C     = 8 * np.pi * const.k_B * nu_CO**3 * const.c**-3 # = 4.90613026e-05 Lsun / ( K km/s pc^2 )
+    L_CO  = ( L_CO_prime * C ).to( u.Lsun )
     return L_CO
 
 
