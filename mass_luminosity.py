@@ -107,16 +107,18 @@ def COMAP_Fid(Mvec,MLpar,z):
     L = C/((Mvec/Ms)**A+(Mvec/Ms)**B)
     return L*4.9e-5*u.Lsun
    
-
-    
-def FIRE_Forged_CO(Mvec,MLpar,z):
+   
+ 
+def Tolgay2026CO(Mvec,MLpar,z):
     '''
     Model from Tolgay et al 2026 using FIRE galaxies to estimate how L_CO 
     changes with halo mass and redshift.
     '''
+    from pathlib import Path
+
     # default interpollation table for line luminosity model parameters
-    interp_table_file = ('/home/njcarlson/Repositories/CITA_LIM/limlam_mo'+
-            'cker/tables/FIRE-forged_CO.txt')
+    WebSkyLIM_dir = Path(__file__).resolve().parent
+    interp_table_file = WebSkyLIM_dir / "limlam_mocker" / "tables" / "Tolgay2026_FIRE_CO.txt"
     # interp_table = np.array([
     #     # z,   A   ,   B   , log C, log(M*/Msun), sigma
     #     [ 0, -3.731, -1.249, 7.178,    11.037   , 0.74 ],
@@ -136,14 +138,22 @@ def FIRE_Forged_CO(Mvec,MLpar,z):
     A     = np.interp( z, interp_table[:,0], interp_table[:,1] )
     B     = np.interp( z, interp_table[:,0], interp_table[:,2] )
     logC  = np.interp( z, interp_table[:,0], interp_table[:,3] )
+    C     = 10**logC
     logM  = np.interp( z, interp_table[:,0], interp_table[:,4] )
     Ms    = 10**logM * u.Msun
     sigma = np.interp( z, interp_table[:,0], interp_table[:,5] )
 
-    # Need to implement scatter
-
+    # the mean scatter in ln L_{CO} is
+    Mnorm = Mvec / Ms
+    lnL_CO_prime = np.log(10) * ( logC - np.log10( Mnorm**A + Mnorm**B ) )
+    
+    # We apply a log-normal scatter meaning that ln(L_{CO}) is normally distributed with mean lnL_CO_prime. sigma is read from the table
+    lognorm_sigma = np.log(10) * sigma
+    lognorm_scatter = np.random.normal( lnL_CO_prime, lognorm_sigma )
+    
     # Luminosity in K km/s pc^2
-    L_CO_prime = C / ( ( Mvec/Ms )**A + ( Mvec/Ms )**B )
+    # L_CO_prime = C / ( ( Mvec/Ms )**A + ( Mvec/Ms )**B )
+    L_CO_prime = 10**lognorm_scatter
 
     # Compute and return Luminosity in solar luminosities
     L_CO = L_CO_prime * 4.9e-5 * u.Lsun
