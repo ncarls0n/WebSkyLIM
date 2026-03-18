@@ -138,7 +138,7 @@ def Tolgay2026CO(Mvec,MLpar,z):
     A     = np.interp( z, interp_table[:,0], interp_table[:,1] )
     B     = np.interp( z, interp_table[:,0], interp_table[:,2] )
     logC  = np.interp( z, interp_table[:,0], interp_table[:,3] )
-    C     = 10**logC
+    #C     = 10**logC
     logM  = np.interp( z, interp_table[:,0], interp_table[:,4] )
     Ms    = 10**logM * u.Msun
     sigma = np.interp( z, interp_table[:,0], interp_table[:,5] )
