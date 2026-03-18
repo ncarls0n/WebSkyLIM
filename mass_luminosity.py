@@ -157,7 +157,7 @@ def Tolgay2026CO(Mvec,MLpar,z):
     L_CO_prime = 10**lognorm_scatter * u.K * u.km * u.s**-1 * u.pc**2
 
     # Compute and return Luminosity in solar luminosities
-    nu_CO = 115.27 * u.GHz
+    nu_CO = 115.2712 * u.GHz # CO(1-0) rest frequency
     C     = 8 * np.pi * const.k_B * nu_CO**3 * const.c**-3 # = 4.90613026e-05 Lsun / ( K km/s pc^2 )
     L_CO  = ( L_CO_prime * C ).to( u.Lsun )
     return L_CO
