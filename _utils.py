@@ -3,7 +3,7 @@ Miscellaneous utilities for LIM code
 '''
 import numpy as np
 from astropy.units.quantity import Quantity
-from astropy.cosmology.core import FlatLambdaCDM
+from astropy.cosmology import FlatLambdaCDM
 from scipy.interpolate import interp1d
 import inspect
 import astropy.units as u
