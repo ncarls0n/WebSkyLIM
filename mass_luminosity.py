@@ -154,7 +154,7 @@ def Tolgay2026CO(Mvec,MLpar,z):
             z_low, z_high = 2, 3
         logL_low  = logL_CO_prime_intz( Mhalo, z_low  )
         logL_high = logL_CO_prime_intz( Mhalo, z_high )
-        return interp_func( z, z_low, z_high, logL_low, logL_high
+        return interp_func( z, z_low, z_high, logL_low, logL_high )
 
     def sigma_interp( z ):
         sigma_table = np.array([ 0.74, 0.80, 0.67, 0.54 ])
@@ -162,8 +162,8 @@ def Tolgay2026CO(Mvec,MLpar,z):
             z_low, z_high = np.floor(z), np.ceil( z)
         else:
             z_low, z_high = 2, 3
-        sigma_low  = sigma_table[ int(sigma)   ]
-        sigma_high = sigma_table[ int(sigma)+1 ]
+        sigma_low  = sigma_table[ int(z_low ) ]
+        sigma_high = sigma_table[ int(z_high) ]
         return interp_func( z, z_low, z_high, sigma_low, sigma_high )
 
     # Load interpollation table file from model parameters if present
@@ -188,8 +188,8 @@ def Tolgay2026CO(Mvec,MLpar,z):
         lnL_CO_prime = np.log(10) * ( logC - np.log10( Mnorm**A + Mnorm**B ) )
 
     else:
-        sigma        = sigma_interp( z ) 
-        lnL_CO_prime = np.log(10) * logL_CO_prime_interp( Mhalo, z )
+        sigma        = np.array([ sigma_interp( z[j] ) for j in range(len(z)) ])
+        lnL_CO_prime = np.array([ np.log(10) * logL_CO_prime_interp( Mhalo[j], z[j] ) for j in range(len(z)) ])
 
     # We apply a log-normal scatter meaning that ln(L_{CO}) is normally distributed with mean lnL_CO_prime. sigma is read from the table
     lognorm_sigma = np.log(10) * sigma
