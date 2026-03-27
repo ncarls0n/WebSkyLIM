@@ -127,27 +127,70 @@ def Tolgay2026CO(Mvec,MLpar,z):
     #     [ 2, -3.442, -2.119, 7.475,    11.558   , 0.67 ],
     #     [ 3, -3.175, -3.175, 7.205,    11.727   , 0.54 ] ])
 
+    def logL_CO_prime_z_lt_2( Mhalo, alpha, beta, loggamma, logMstar ):
+        M = Mhalo / 10**logMstar
+        return loggamma + alpha * M + (beta-gamma) * (1+M)
+
+    def logL_CO_prime_z_gt_1( Mhalo, loga, b ):
+        return loga + b * Mhalo
+
+    def logL_CO_prime_intz( Mhalo, z ):
+        if   z == 0: return logL_CO_prime_z_lt_2( Mhalo, 8.0, 0.8, 7.362, 10.580 )
+        elif z == 1: return logL_CO_prime_z_lt_2( Mhalo, 3.9, 0.2, 9.000, 11.763 )
+        elif z == 2: return logL_CO_prime_z_gt_1( Mhalo, -30.6, 3.2 )
+        elif z == 3: return logL_CO_prime_z_gt_1( Mhalo, -30.1, 3.2 )
+        else:
+            raise ValueError('z /= 0,1,2,3')
+
+    def interp_func( x, x1, x2, y1, y2 ):
+        m = (y2-y1)/(x2-x1)
+        b = y1-m*x1
+        return m*x+b
+    
+    def logL_CO_prime_interp( Mhalo, z ):
+        if z < 3:
+            z_low, z_high = np.floor(z), np.ceil( z)
+        else:
+            z_low, z_high = 2, 3
+        logL_low  = logL_CO_prime_intz( Mhalo, z_low  )
+        logL_high = logL_CO_prime_intz( Mhalo, z_high )
+        return interp_func( z, z_low, z_high, logL_low, logL_high
+
+    def sigma_interp( z ):
+        sigma_table = np.array([ 0.74, 0.80, 0.67, 0.54 ])
+        if z < 3:
+            z_low, z_high = np.floor(z), np.ceil( z)
+        else:
+            z_low, z_high = 2, 3
+        sigma_low  = sigma_table[ int(sigma)   ]
+        sigma_high = sigma_table[ int(sigma)+1 ]
+        return interp_func( z, z_low, z_high, sigma_low, sigma_high )
+
     # Load interpollation table file from model parameters if present
     if 'interp_table_file' in MLpar:
         if not MLpar['interp_table_file'] is None:
             interp_table_file = MLpar['interp_table_file']
 
-    # Load the interpollation file
-    interp_table = np.genfromtxt( interp_table_file, delimiter=',' )
+        # Load the interpollation file
+        interp_table = np.genfromtxt( interp_table_file, delimiter=',' )
 
-    # For now, we do a linear interpollation between model parameters 
-    A     = np.interp( z, interp_table[:,0], interp_table[:,1] )
-    B     = np.interp( z, interp_table[:,0], interp_table[:,2] )
-    logC  = np.interp( z, interp_table[:,0], interp_table[:,3] )
-    #C     = 10**logC
-    logM  = np.interp( z, interp_table[:,0], interp_table[:,4] )
-    Ms    = 10**logM * u.Msun
-    sigma = np.interp( z, interp_table[:,0], interp_table[:,5] )
-
-    # the mean scatter in ln L_{CO} is
-    Mnorm = Mvec / Ms
-    lnL_CO_prime = np.log(10) * ( logC - np.log10( Mnorm**A + Mnorm**B ) )
+        # For now, we do a linear interpollation between model parameters 
+        A     = np.interp( z, interp_table[:,0], interp_table[:,1] )
+        B     = np.interp( z, interp_table[:,0], interp_table[:,2] )
+        logC  = np.interp( z, interp_table[:,0], interp_table[:,3] )
+        #C     = 10**logC
+        logM  = np.interp( z, interp_table[:,0], interp_table[:,4] )
+        Ms    = 10**logM * u.Msun
+        sigma = np.interp( z, interp_table[:,0], interp_table[:,5] )
     
+        # the mean scatter in ln L_{CO} is
+        Mnorm = Mvec / Ms
+        lnL_CO_prime = np.log(10) * ( logC - np.log10( Mnorm**A + Mnorm**B ) )
+
+    else:
+        sigma        = sigma_interp( z ) 
+        lnL_CO_prime = np.log(10) * logL_CO_prime_interp( Mhalo, z )
+
     # We apply a log-normal scatter meaning that ln(L_{CO}) is normally distributed with mean lnL_CO_prime. sigma is read from the table
     lognorm_sigma = np.log(10) * sigma
     lognorm_scatter = np.random.normal( lnL_CO_prime, lognorm_sigma )
