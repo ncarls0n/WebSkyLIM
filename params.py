@@ -160,6 +160,53 @@ COMAP_Fid = dict(cosmo_model = 'Planck15',
                   catalogue_file = '/mnt/scratch-lustre/horlaville/nate_sims/may_5/ngaussian/ngaussian_lc_mlambda10.npz',
                   )
 
+# Tolgay 2026 CO(1-0) model
+Tolgay2026CO = dict(cosmo_model = 'Planck15',
+                  model_type = 'ML',
+                  model_name = 'Tolgay2026CO',
+
+                  # COMAP_Fid model parameters using 
+                  model_par = {},
+
+                  # Observatory parameters
+                  # CO(1-0) rest frame frequency
+                  nu    = 115.27*u.GHz,
+
+                  # CO(2-1) rest frame freqeuncy
+                  # nu = 230.5380*u.GHz,
+
+                  # CO(3-2) rest frame frequency
+                  # nu = 345.7960*u.GHz,
+
+                  # Ku band frequency
+                  # nuObs = 15*u.GHz,
+
+                  # Ka band frequency
+                  nuObs = 30*u.GHz,
+
+                  # Q band frequency
+                  # nuObs = 45*u.GHz,
+
+                  # Dark matter halo masses
+                  Mmin = 1e5*u.Msun, # Set high to compare to incomplete sims
+                  Mmax = 1e15*u.Msun,
+                  nM = 5000,
+                  nL = 5000,
+                  kmin = 1e-2/u.Mpc,
+                  kmax = 7./u.Mpc,
+                  nk = 100,
+                  sigma_scatter = 0.0,
+                  Tsys_NEFD = 44*u.K,
+                  Nfeeds = 19,
+                  beam_FWHM = 0.8*u.arcmin,
+                  Delta_nu = 13.7*u.GHz,
+                  dnu = 300*u.MHz,
+                  tobs = 1500*u.hr,
+                  Omega_field = 538*u.deg**2,
+                  do_Jysr = False,
+                  Nfield = 4,
+                  catalogue_file = '/mnt/scratch-lustre/horlaville/nate_sims/may_5/ngaussian/ngaussian_lc_mlambda10.npz',
+                  )
 
 
 
