@@ -392,7 +392,8 @@ class LineModel(object):
         '''
         return MassFunction(cosmo_model=self.cosmo_model,Mmin=hmf_logMmin,
                                 Mmax=hmf_logMmax,dlog10m=hmf_dlog10m,z=self.z,
-                                hmf_model=self.hmf_model)
+                                hmf_model=self.hmf_model,
+                                transfer_params={'extrapolate_with_eh': True})
 
 
     @cached_property
