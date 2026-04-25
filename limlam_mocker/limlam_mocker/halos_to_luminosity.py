@@ -74,7 +74,7 @@ def Mhalo_to_Lline(halos, model_type, model_name, model_par, sigma_scatter=0.,
     elif model_type=='LF':
         if L is None or dndL is None:
             raise ValueError('LF models require input L and dndL')
-        nbar = np.trapz(dndL,L)
+        nbar = np.trapezoid(dndL,L)
         PDF = dndL/nbar # Probability distribution for luminosities
         # Draw random luminosities
         N = halos.M.size

@@ -352,7 +352,7 @@ class LineModel(object):
                 for ii in range(0,self.nL):
                     Li = self.L[ii]
                     itgrnd = dndL*P_scatter(Li/self.L)/self.L
-                    dndL_s[ii] = np.trapz(itgrnd,self.L)
+                    dndL_s[ii] = np.trapezoid(itgrnd,self.L)
                     
                 return dndL_s
             else:
@@ -479,7 +479,7 @@ class LineModel(object):
         itgrnd1 = self.LofM*self.bofM*self.dndM
         itgrnd2 = self.LofM*self.dndM
         
-        return np.trapz(itgrnd1,self.M) / np.trapz(itgrnd2,self.M)
+        return np.trapezoid(itgrnd1,self.M) / np.trapezoid(itgrnd2,self.M)
     
     @cached_property
     def nbar(self):
@@ -488,9 +488,9 @@ class LineModel(object):
         in 'LF' models and from the mass function in 'ML' models
         '''
         if self.model_type=='LF':
-            nbar = np.trapz(self.dndL,self.L)
+            nbar = np.trapezoid(self.dndL,self.L)
         else:
-            nbar = np.trapz(self.dndM,self.M)
+            nbar = np.trapezoid(self.dndM,self.M)
         return nbar
         
     #############################
@@ -519,10 +519,10 @@ class LineModel(object):
         '''
         if self.model_type=='LF':
             itgrnd = self.L*self.dndL
-            Lbar = np.trapz(itgrnd,self.L)
+            Lbar = np.trapezoid(itgrnd,self.L)
         else:
             itgrnd = self.LofM*self.dndM
-            Lbar = np.trapz(itgrnd,self.M)*self.fduty
+            Lbar = np.trapezoid(itgrnd,self.M)*self.fduty
             # Special case for Tony Li model- scatter does not preserve LCO
             if self.model_name=='TonyLi':
                 alpha = self.model_par['alpha']
@@ -540,10 +540,10 @@ class LineModel(object):
         '''
         if self.model_type=='LF':
             itgrnd = self.L**2*self.dndL
-            L2bar = np.trapz(itgrnd,self.L)
+            L2bar = np.trapezoid(itgrnd,self.L)
         else:
             itgrnd = self.LofM**2*self.dndM
-            L2bar = np.trapz(itgrnd,self.M)*self.fduty
+            L2bar = np.trapezoid(itgrnd,self.M)*self.fduty
             # Add L vs. M scatter
             L2bar = L2bar*np.exp(self.sigma_scatter**2*np.log(10)**2)
             # Special case for Tony Li model- scatter does not preserve LCO
@@ -569,7 +569,7 @@ class LineModel(object):
                 Mass_Dep = self.LofM*self.bofM*self.dndM
                 itgrnd = (np.tile(Mass_Dep,[self.k.size,1]).transpose()
                             *self.ft_NFW)
-                wt = self.CLT*np.trapz(itgrnd,self.M,axis=0)
+                wt = self.CLT*np.trapezoid(itgrnd,self.M,axis=0)
                 # Special case for SFR(M) scatter in Tony Li model
                 if self.model_name=='TonyLi':
                     alpha = self.model_par['alpha']
@@ -597,7 +597,7 @@ class LineModel(object):
                 sig_SFR = self.model_par['sig_SFR']
                 itgrnd = itgrnd*np.exp((2.*alpha**-2-alpha**-1)
                                     *sig_SFR**2*np.log(10)**2)
-            return self.CLT**2.*np.trapz(itgrnd,self.M,axis=0)
+            return self.CLT**2.*np.trapezoid(itgrnd,self.M,axis=0)
         else:
             return np.zeros(self.k.size)*self.Pshot.unit
             
@@ -645,7 +645,7 @@ class LineModel(object):
         P = np.zeros(self.k.size)*self.Tmean.unit**2*u.Mpc
         for ii in range(0,self.k.size):
             x = self.k>=self.k[ii]
-            P[ii] = np.trapz(self.k[x]*self.Pk_clust[x],self.k[x])/(2*np.pi)
+            P[ii] = np.trapezoid(self.k[x]*self.Pk_clust[x],self.k[x])/(2*np.pi)
         return P
     
     @cached_property

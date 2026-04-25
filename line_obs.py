@@ -303,7 +303,7 @@ class LineObs(LineModel):
                     .decompose())
         exp2 = np.exp(np.float128(exparg2))
         #exp2[exp2>1e100] = 10**100
-        return np.exp(np.float128(exparg1))*np.trapz(exp2,mu,axis=0)
+        return np.exp(np.float128(exparg1))*np.trapezoid(exp2,mu,axis=0)
         
     @cached_property
     def Nmodes(self):
@@ -394,7 +394,7 @@ class LineObs(LineModel):
         exparg2 = -(ki/self.kmin_par)**2*mui**2
         itgrnd = ((1-np.exp(np.float128(exparg1)))*
                   (1-np.exp(np.float128(exparg2))))
-        return np.trapz(itgrnd,mu,axis=0)
+        return np.trapezoid(itgrnd,mu,axis=0)
         
     @cached_property
     def kmin_field(self):
@@ -548,10 +548,10 @@ class LineObs(LineModel):
         for ii in range(0,k.size):
             ki = k[ii]
             jl = jn(l,ki*r)
-            I1[ii] = np.trapz(jl,r)
+            I1[ii] = np.trapezoid(jl,r)
         
         itgrnd = k**2*Pf*I1**2/(r.max()-r.min())**2
-        return (2./np.pi)*np.trapz(itgrnd,k)
+        return (2./np.pi)*np.trapezoid(itgrnd,k)
 
     @cached_property
     def _Cl_exact(self):
@@ -611,7 +611,7 @@ class LineObs(LineModel):
                 P[jj] = self.mCl.Pk_interp(ki)
                 
             itgrnd = H*P/(cu.c*r**2*self.dz**2)    
-            C[ii] = np.trapz(itgrnd,self.zi_Cl)
+            C[ii] = np.trapezoid(itgrnd,self.zi_Cl)
         return C
 
     @cached_property
@@ -832,7 +832,7 @@ class LineObs(LineModel):
 
         P_poiss = poisson.pmf(Ngal2,mu2)
                 
-        return np.trapz(P_poiss*Pln,mu)
+        return np.trapezoid(P_poiss*Pln,mu)
     
     @cached_property
     def PofN(self):
@@ -945,7 +945,7 @@ class LineObs(LineModel):
         Outputs the value of integral(P(T)dT) including the spike at T=0.
         Used as a numerical check, should come out quite close to 1.0
         '''
-        return np.trapz(self.PT,self.T)+self.PT_zero
+        return np.trapezoid(self.PT,self.T)+self.PT_zero
         
     ########################
     # Predicted histograms #
