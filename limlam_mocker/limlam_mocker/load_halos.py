@@ -151,7 +151,7 @@ def load_peakpatch_catalogue(halo_info, filetype='.npz', saveHalos=False, saveFo
         halos.chi        = np.sqrt(halos.x_pos**2+halos.y_pos**2+halos.z_pos**2)  
         halos.nhalo      = len(halos.M)
         halos.ra         = np.arctan2(-halos.x_pos,halos.z_pos)*180./np.pi - cen_x_fov
-        halos.dec        = np.arcsin(np.where(halos.chi > 0, halos.y_pos/halos.chi, 0.))*180./np.pi - cen_y_fov
+        halos.dec        = np.arcsin(np.divide(halos.y_pos, halos.chi, out=np.zeros_like(halos.y_pos, dtype=float), where=halos.chi > 0))*180./np.pi - cen_y_fov
 
     assert np.max(halos.M) < 1.e17,             "Halos seem too massive"
     # assert np.max(halos.redshift) < 4.,         "need to change max redshift interpolation in tools.py" 
