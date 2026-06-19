@@ -210,6 +210,34 @@ Tolgay2026CO = dict(cosmo_model = 'Planck15',
 
 
 
+# Tolgay 2026 Lyman-alpha model
+Tolgay2026Lya = dict(cosmo_model = 'Planck15',
+                  model_type = 'ML',
+                  model_name = 'Tolgay2026Lya',
+                  model_par = {},
+                  nu    = 2466100.0*u.GHz,  # Lya rest frequency (121.567 nm)
+                  nuObs = 600000.0*u.GHz,   # z~3 placeholder; override via m.update()
+                  Mmin = 1e5*u.Msun,
+                  Mmax = 1e15*u.Msun,
+                  nM = 5000,
+                  nL = 5000,
+                  kmin = 1e-2/u.Mpc,
+                  kmax = 7./u.Mpc,
+                  nk = 100,
+                  sigma_scatter = 0.0,
+                  Tsys_NEFD = 44*u.K,
+                  Nfeeds = 1,
+                  beam_FWHM = 1.0*u.arcmin,
+                  Delta_nu = 100000.0*u.GHz,
+                  dnu = 1000.0*u.GHz,
+                  tobs = 1000*u.hr,
+                  Omega_field = 1*u.deg**2,
+                  do_Jysr = False,
+                  Nfield = 1,
+                  catalogue_file = '',
+                  )
+
+
 # /home/dongwooc/scratchspace/pprun_hiz_npz/COMAP_z5.8-7.9_960Mpc_seed_13819.npz
 # Gaussian lightcone: nate_sims/gaussian/gauss_lightcone.npz
 # Non-Gaussian Instability lightcone: nate_sims/ngauss_instab/ngauss_instab_lightcone.npz

@@ -141,11 +141,11 @@ def Tolgay2026CO(Mvec,MLpar,z):
         return loga + b * np.log10(Mhalo)
 
     # Convenience function for log_{10}L'_{CO(1-0)}(M_halo,z) for integer z
-    def logL_CO_prime_intz( Mhalo, z ):
-        if   z == 0: return logL_CO_prime_z_lt_2( Mhalo, 8.0, 0.8, 7.362, 10.580 )
-        elif z == 1: return logL_CO_prime_z_lt_2( Mhalo, 3.9, 0.2, 9.000, 11.763 )
-        elif z == 2: return logL_CO_prime_z_gt_1( Mhalo, -30.6, 3.2 )
-        elif z == 3: return logL_CO_prime_z_gt_1( Mhalo, -30.1, 3.2 )
+    def logL_CO_prime_intz( Mhalo, z ):                #    A     B     C     x_break
+        if   z == 0: return logL_CO_prime_z_lt_2( Mhalo,   8.9,  0.5,  8.146, 10.672  )
+        elif z == 1: return logL_CO_prime_z_lt_2( Mhalo,   3.8, -1.4, 10.279, 12.114  )
+        elif z == 2: return logL_CO_prime_z_gt_1( Mhalo, -30.1,  3.2 )
+        elif z == 3: return logL_CO_prime_z_gt_1( Mhalo, -27.2,  3.0 )
         else:
             raise ValueError('z /= 0,1,2,3')
 
@@ -167,7 +167,7 @@ def Tolgay2026CO(Mvec,MLpar,z):
 
     # Interpolate \sigma(z) from table
     def sigma_interp( z ):
-        sigma_table = np.array([ 0.74, 0.80, 0.67, 0.54 ])
+        sigma_table = np.array([ 0.885, 0.795, 0.755, 0.845 ])
         if z < 3:
             z_low, z_high = int(z), int(z)+1
         else:
@@ -221,6 +221,36 @@ def Tolgay2026CO(Mvec,MLpar,z):
     L_CO  = ( L_CO_prime * C ).to( u.Lsun )
     return L_CO
 
+
+
+def Tolgay2026Lya(Mvec, MLpar, z):
+    """Power-law Lya model (Tolgay 2026). No scatter.
+
+    log(L_Lya / erg/s) = a(z) + b(z) * log10(M_halo / M_sun)
+
+    Parameters a(z) and b(z) are linearly interpolated from a 3-column CSV
+    table (z, a, b).  The default table covers z=0–3.
+    """
+    from pathlib import Path
+
+    WebSkyLIM_dir = Path(__file__).resolve().parent
+    interp_table_file = WebSkyLIM_dir / "limlam_mocker" / "tables" / "Tolgay2026_Lya.txt"
+    if 'interp_table_file' in MLpar and MLpar['interp_table_file'] is not None:
+        interp_table_file = MLpar['interp_table_file']
+
+    if getattr(z, "isscalar", False):
+        z = np.ones(np.shape(Mvec)) * z
+
+    interp_table = np.genfromtxt(interp_table_file, delimiter=',')
+    a = np.interp(z, interp_table[:, 0], interp_table[:, 1])
+    b = np.interp(z, interp_table[:, 0], interp_table[:, 2])
+
+    log_M = np.log10(Mvec.to(u.Msun).value)
+    log_L_erg_s = a + b * log_M
+
+    L_sun_erg_s = 3.828e33
+    L_Lya = 10**(log_L_erg_s - np.log10(L_sun_erg_s)) * u.Lsun
+    return L_Lya
 
 
 def TonyLi(Mvec, MLpar, z):
